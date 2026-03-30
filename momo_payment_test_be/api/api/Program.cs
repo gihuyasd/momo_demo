@@ -8,16 +8,23 @@ DotEnv.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
+var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
 var frontendUrl = Environment.GetEnvironmentVariable("FRONTEND_URL") ?? "http://localhost:5173";
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
+builder.Services.AddHttpClient<IMomoService, MomoService>();
+// builder.Services.AddScoped<IPaymentRepository, PaymentRepository>(); // Nếu bạn có dùng Repository
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", policy =>
     {
         policy.WithOrigins(frontendUrl) 
-              .AllowAnyMethod()        
-              .AllowAnyHeader()         
-              .AllowCredentials();      
+              .AllowAnyMethod()         
+              .AllowAnyHeader()          
+              .AllowCredentials();       
     });
 });
 
@@ -27,16 +34,29 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseRouting();
 
 app.UseCors("CorsPolicy");
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    try 
+    {
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        Console.WriteLine("Đang đợi MySQL khởi động (5s)...");
+        Thread.Sleep(5000); 
+        db.Database.Migrate();
+        Console.WriteLine("Migration thành công!");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Lỗi Migration: {ex.Message}");
+    }
+}
 
 app.Run();
