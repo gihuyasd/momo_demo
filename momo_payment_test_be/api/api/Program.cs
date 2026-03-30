@@ -3,6 +3,8 @@ using api.Infrastructure.Persistence;
 using api.Infrastructure.Services;
 using dotenv.net;
 using Microsoft.EntityFrameworkCore;
+using api.Domain.Interfaces;
+using api.Infrastructure.Persistence.Repositories;
 
 DotEnv.Load();
 
@@ -15,7 +17,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 builder.Services.AddHttpClient<IMomoService, MomoService>();
-// builder.Services.AddScoped<IPaymentRepository, PaymentRepository>(); // Nếu bạn có dùng Repository
+builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 
 builder.Services.AddCors(options =>
 {
