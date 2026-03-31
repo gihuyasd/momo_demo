@@ -11,7 +11,8 @@ export interface PaymentResponse {
 }
 
 export interface PaymentHistoryItem {
-  PaymentID: string;
-  BookingID: number;
-  CreatedAt: string;
+    paymentID: string;
+    amount: number;
+    content: string;
+    createdAt: string;
 }

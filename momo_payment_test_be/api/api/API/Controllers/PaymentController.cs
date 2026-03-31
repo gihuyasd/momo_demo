@@ -53,4 +53,11 @@ public class PaymentController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAllPayments()
+    {
+        var payments = await _repo.GetAllAsync();
+        return Ok(payments);
+    }
 }

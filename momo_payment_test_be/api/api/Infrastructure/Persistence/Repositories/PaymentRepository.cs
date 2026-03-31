@@ -23,4 +23,8 @@ public class PaymentRepository : IPaymentRepository
     {
         return await _context.Payments.AnyAsync(p => p.PaymentID == paymentId);
     }
+    public async Task<List<Payment>> GetAllAsync()
+    {
+        return await _context.Payments.ToListAsync();
+    }
 }
