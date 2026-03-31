@@ -28,7 +28,7 @@ services:
       context: ./momo_payment_test
       dockerfile: Dockerfile
       args:
-         - VITE_API_URL=${VITE_API_URL} 
+        - VITE_API_URL=${VITE_API_URL} 
     container_name: frontend_app
     ports:
       - "5173:80"
