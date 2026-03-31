@@ -10,7 +10,7 @@ const PaymentHistory: React.FC = () => {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const res = await axios.get<PaymentHistoryItem[]>(`${API_URL}/payment/history`);
+        const res = await axios.get<PaymentHistoryItem[]>(`${API_URL}/payment`);
         setHistory(res.data);
       } catch (err) {
         console.error("Failed to fetch history", err);
